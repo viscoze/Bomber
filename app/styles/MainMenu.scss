@@ -1,0 +1,35 @@
+$purple-light: #ff6999;
+$white-alpha:  rgba(white,0.7);
+
+.MainMenu {
+  $button-color: $white-alpha;
+
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+
+  width: 100%;
+  height: 100%;
+
+  .logo {
+    color: white;
+    font-size: 100px;
+    font-weight: 900;
+    text-transform: uppercase;
+    margin-bottom: 10%;
+    -webkit-text-stroke: 2px rgba($button-color,0.7);
+  }
+
+  .menu-button {
+    width: 35%;
+    height: 15%;
+    margin-bottom: 5%;
+    background-color: transparent;
+    border: 4px solid $button-color;
+    color: $button-color;
+    font-size: 40px;
+    text-transform: uppercase;
+  }
+}
