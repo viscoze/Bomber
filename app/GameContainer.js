@@ -22,13 +22,20 @@ class GameContainer extends Component {
     const numberOfRows    = 7;
     const sizeOfBlock     = 65;
 
-    context.fillStyle = "rgba(255,255,255, 0.4)";
-    for (let rowIndex = 0; rowIndex < numberOfRows; rowIndex++) {
+    for (let rowIndex = 0; rowIndex < numberOfRows; rowIndex++)
       for (let columnIndex = 0; columnIndex < numberOfColumns; columnIndex++) {
-        context.fillRect(rowIndex*sizeOfBlock+3, columnIndex*sizeOfBlock+3,
+        if (rowIndex % 2 !== 0 && columnIndex % 2 !== 0) {
+          context.fillStyle = "rgba(255,255,255, 0.7)";
+          context.fillRect(columnIndex * (sizeOfBlock + 2),
+                           rowIndex * (sizeOfBlock + 2),
+                           sizeOfBlock, sizeOfBlock);
+          continue;
+        }
+        context.fillStyle = "rgba(255,255,255, 0.4)";
+        context.fillRect(columnIndex * (sizeOfBlock + 2),
+                         rowIndex * (sizeOfBlock + 2),
                          sizeOfBlock, sizeOfBlock);
       }
-    }
 
     // this.setState({ canvas, context });
   }
@@ -36,7 +43,7 @@ class GameContainer extends Component {
   render() {
     return (
       <div className="GameContainer">
-        <canvas ref="canvas" width="727px" height="475px" />
+        <canvas ref="canvas" width="728px" height="475px" />
       </div>
     );
   }
