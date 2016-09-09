@@ -1,35 +1,53 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
-import Button from './Button';
+import Button   from './Button';
 import Renderer from './redux/Renderer.js';
 import './styles/Bomber.scss';
 
 class Bomber extends Component {
+  constructor() {
+    super();
+
+    this.handleKeypress = this.handleKeypress.bind(this);
+  }
+
   componentDidMount() {
-    const canvas  = ReactDOM.findDOMNode(this.refs.canvas);
-    this.renderer = new Renderer(canvas);
+    const createBox = this.props.createBox.bind(this);
+    const canvas    = ReactDOM.findDOMNode(this.refs.canvas);
+    this.renderer   = new Renderer(canvas);
 
     this.renderer.render();
-    this.addEventHandlers();
+    this.renderer.drawBoxes(createBox);
+    this.props.createPlayer(0,  0, "rgba(255, 153, 20, 0.4)");
+    this.props.createPlayer(10, 6, "rgba(20, 239, 255, 0.4)");
+    window.addEventListener('keypress', this.handleKeypress);
+  }
+
+  componentWillUnmount() {
+    this.props.clearArena();
+    window.removeEventListener('keypress', this.handleKeypress);
   }
 
   componentWillReceiveProps(nextProps) {
-
+    this.renderer.render(nextProps.canvasState);
   }
 
-  addEventHandlers() {
-    window.addEventListener('keypress', (event) => {
-      switch (event.keyCode) {
-        case 65: { this.props.movePlayer(0, 'LEFT');  break; }
-        case 87: { this.props.movePlayer(0, 'UP');    break; }
-        case 68: { this.props.movePlayer(0, 'RIGTH'); break; }
-        case 83: { this.props.movePlayer(0, 'DOWN');  break; }
-        default: return;
-      }
-    });
+  handleKeypress(event) {
+    switch (event.keyCode) {
+      case 87: case 119: { this.props.movePlayer(0, 'UP');    break; }
+      case 83: case 115: { this.props.movePlayer(0, 'DOWN');  break; }
+      case 65: case 97:  { this.props.movePlayer(0, 'LEFT');  break; }
+      case 68: case 100: { this.props.movePlayer(0, 'RIGTH'); break; }
+      case 56:           { this.props.movePlayer(1, 'UP');    break; }
+      case 53:           { this.props.movePlayer(1, 'DOWN');  break; }
+      case 52:           { this.props.movePlayer(1, 'LEFT');  break; }
+      case 54:           { this.props.movePlayer(1, 'RIGTH'); break; }
+      default: return;
+    }
   }
 
   redirectToMenu() {
+    this.props.clearArena();
     this.context.router.push('/');
   }
 

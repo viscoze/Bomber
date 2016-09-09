@@ -18,5 +18,31 @@ export default {
         direction,
       }
     }
-  }
+  },
+
+  clearArena() {
+    return {
+      type: 'CLEAR_ARENA',
+    }
+  },
+
+  createBox(positionX, positionY) {
+    return {
+      type: 'CREATE_BOX',
+      payload: {
+        positionX,
+        positionY,
+      }
+    }
+  },
+
+  removeBox(positionX, positionY) {
+    return {
+      type: 'REMOVE_BOX',
+      payload: {
+        positionX,
+        positionY,
+      }
+    }
+  },
 };

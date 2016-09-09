@@ -11,6 +11,9 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = (dispatch) => ({
   createPlayer: (startX, startY, color) => dispatch(bomberActions.createPlayer(startX, startY, color)),
   movePlayer: (playerId, direction) => dispatch(bomberActions.movePlayer(playerId, direction)),
+  createBox: (positionX, positionY) => dispatch(bomberActions.createBox(positionX, positionY)),
+  removeBox: (positionX, positionY) => dispatch(bomberActions.removeBox(positionX, positionY)),
+  clearArena: () => dispatch(bomberActions.clearArena()),
 });
 
 const BomberContainer = connect(mapStateToProps, mapDispatchToProps)(Bomber);
