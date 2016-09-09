@@ -3,6 +3,12 @@
   height: 100%;
 
   canvas {
-    margin: 11px;
+    margin:9px;
+  }
+
+  .button-panel {
+    display: flex;
+    align-content: center;
+    justify-content: space-around;
   }
 }

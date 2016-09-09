@@ -1,9 +1,7 @@
-$purple-light: #ff6999;
-$white-alpha:  rgba(white,0.7);
+@import "variables.scss";
 
 .MainMenu {
   $button-color: $white-alpha;
-
 
   display: flex;
   align-items: center;
@@ -31,5 +29,6 @@ $white-alpha:  rgba(white,0.7);
     color: $button-color;
     font-size: 40px;
     text-transform: uppercase;
+    outline: none;
   }
 }
