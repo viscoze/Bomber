@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { render } from 'react-dom';
 import { Router, Route, browserHistory } from 'react-router';
-import Bomber from './Bomber';
+import BomberRouter from './BomberRouter';
 import './styles/general.scss';
 
 class App extends Component {
@@ -9,7 +9,7 @@ class App extends Component {
     return (
       <div className="wrapper">
         <div className="App">
-          <Bomber />
+          <BomberRouter />
         </div>
       </div>
     );

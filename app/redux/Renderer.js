@@ -1,69 +1,22 @@
-import actions from './actions.js';
-import Game    from './Game.js';
-
-export default {
-  canvas:  null,
-  context: null,
-
-  init(canvas) {
+export default class Renderer {
+  constructor(canvas) {
     this.canvas  = canvas;
     this.context = canvas.getContext('2d');
+  }
 
-    this.drawArena();
-  },
-
-  dispatch(action) {
-    this.clearArena();
-    this.drawArena();
-    this.render(action);
-  },
-
-  render(action) {
-    const { sizeOfBlock } = this.getArenaData();
-
-    switch (action.type) {
-      case 'RENDER_PLAYER': {
-        const { positionX, positionY, color } = action;
-        const x = positionX * (sizeOfBlock + 2);
-        const y = positionY * (sizeOfBlock + 2);
-
-        this.drawRect(x, y, color);
-
-        return;
-      }
-
-      case 'MOVE_PLAYER': {
-        const { finishX, finishY, color } = action;
-        const x = finishX * (sizeOfBlock + 2);
-        const y = finishY * (sizeOfBlock + 2);
-
-        this.drawRect(x, y, color);
-
-        return;
-      }
-
-      default: return;
-    }
-  },
-
-  redraw(state) {
-    const { sizeOfBlock } = this.getArenaData();
-
+  render(state) {
     this.clearArena();
     this.drawArena();
 
-    state.players.map(({ positionX, positionY }) => {
-
-    });
-
-  },
+    if (!state) return;
+  }
 
   drawRect(positionX, positionY, color) {
     const { sizeOfBlock } = this.getArenaData();
 
     this.context.fillStyle = color;
     this.context.fillRect(positionX, positionY, sizeOfBlock, sizeOfBlock);
-  },
+  }
 
   getArenaData() {
     return {
@@ -73,14 +26,14 @@ export default {
       numberOfRows:     7,
       sizeOfBlock:      65,
     };
-  },
+  }
 
   clearArena() {
     const { width, height } = this.getArenaData();
     const context           = this.context;
 
     context.clearRect(0, 0, width, height);
-  },
+  }
 
   drawArena() {
     const { numberOfColumns, numberOfRows, sizeOfBlock } = this.getArenaData();
@@ -101,5 +54,5 @@ export default {
                          sizeOfBlock, sizeOfBlock);
       }
     }
-  },
+  }
 }
