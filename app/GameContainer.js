@@ -1,48 +1,19 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
-import Renderer from './vendor/Renderer';
 import Button   from './Button';
+import Renderer from './vendor/Renderer';
+import EventRouter from './vendor/EventRouter';
+import GameController from './vendor/GameController';
 import './styles/GameContainer.scss';
 
 class GameContainer extends Component {
   componentDidMount() {
-    const canvas   = ReactDOM.findDOMNode(this.refs.canvas);
-    const renderer = new Renderer(canvas);
-    this.renderer  = renderer;
+    const canvas = ReactDOM.findDOMNode(this.refs.canvas);
 
-    window.addEventListener('keypress', (event) => {
-      switch (event.keyCode) {
-        case 38: {
-          renderer.dispatch({
-            type: 'MOVE_PLAYER',
-            direction: 'UP',
-          });
-        }
+    Renderer.init(canvas);
+    EventRouter();
 
-        case 40: {
-          renderer.dispatch({
-            type: 'MOVE_PLAYER',
-            direction: 'DOWN',
-          });
-        }
-
-        case 37: {
-          renderer.dispatch({
-            type: 'MOVE_PLAYER',
-            direction: 'LEFT',
-          });
-        }
-
-        case 39: {
-          renderer.dispatch({
-            type: 'MOVE_PLAYER',
-            direction: 'RIGTH',
-          });
-        }
-
-        default: return;
-      }
-    });
+    GameController.createPlayer(0, 0, "rgba(36, 20, 255, 0.4)");
   }
 
   redirectToMenu() {

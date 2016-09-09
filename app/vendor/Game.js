@@ -1,23 +1,65 @@
+import actions  from './actions.js';
+
 export default {
   players: [],
-
-  init(numberOfPlayers = 2) {
-    if (numberOfPlayers > 4) return;
-
-    this.createPlayer(0, 0,  "rgba(36, 20, 255, 0.4)");
-    // this.createPlayer(10, 6, "rgba(36, 20, 255, 0.4)");
-  },
 
   createPlayer(startX, startY, color) {
     const player = {
       positionX: startX,
       positionY: startY,
       color:     color,
+      bombs:     [],
     };
 
     this.players.push(player);
 
     return player;
+  },
+
+  movement(positionX, positionY, direction) {
+    switch (direction) {
+      case 'UP': {
+        const finishX = positionX;
+        const finishY = positionY - 1;
+
+        if (!this.shouldMove(finishX, finishY))
+          return { finishX: positionX, finishY: positionY };
+
+        return { finishX, finishY };
+      }
+
+      case 'DOWN': {
+        const finishX = positionX;
+        const finishY = positionY + 1;
+
+        if (!this.shouldMove(finishX, finishY))
+          return { finishX: positionX, finishY: positionY };
+
+        return { finishX, finishY };
+      }
+
+      case 'LEFT': {
+        const finishX = positionX - 1;
+        const finishY = positionY;
+
+        if (!this.shouldMove(finishX, finishY))
+          return { finishX: positionX, finishY: positionY };
+
+        return { finishX, finishY };
+      }
+
+      case 'RIGTH': {
+        const finishX = positionX + 1;
+        const finishY = positionY;
+
+        if (!this.shouldMove(finishX, finishY))
+          return { finishX: positionX, finishY: positionY };
+
+        return { finishX, finishY };
+      }
+
+      default: return { finishX: positionX, finishX: positionY };
+    }
   },
 
   shouldMove(x, y) {
@@ -27,51 +69,5 @@ export default {
 
   isOdd(number) {
     return (number % 2 !== 0);
-  },
-
-  movement(positionX, positionY, direction) {
-    switch (direction) {
-      case 'UP': {
-        const x = positionX;
-        const y = positionY - 1;
-
-        if (!this.shouldMove(x, y))
-          return { x: positionX, y: positionY };
-
-        return { x, y };
-      }
-
-      case 'DOWN': {
-        const x = positionX;
-        const y = positionY + 1;
-
-        if (!this.shouldMove(x, y))
-          return { x: positionX, y: positionY };
-
-        return { x, y };
-      }
-
-      case 'LEFT': {
-        const x = positionX - 1;
-        const y = positionY;
-
-        if (!this.shouldMove(x, y))
-          return { x: positionX, y: positionY };
-
-        return { x, y };
-      }
-
-      case 'RIGTH': {
-        const x = positionX + 1;
-        const y = positionY;
-
-        if (!this.shouldMove(x, y))
-          return { x: positionX, y: positionY };
-
-        return { x, y };
-      }
-
-      default: return { x: positionX, y: positionY };
-    }
   },
 };

@@ -1,52 +1,61 @@
 import actions from './actions.js';
 import Game    from './Game.js';
 
-export default class Renderer {
-  constructor(canvas) {
+export default {
+  canvas:  null,
+  context: null,
+
+  init(canvas) {
     this.canvas  = canvas;
     this.context = canvas.getContext('2d');
 
     this.drawArena();
-  }
+  },
 
   dispatch(action) {
     this.clearArena();
-    this.drawArena();
+    this.drawArena()
     this.render(action);
-  }
+  },
 
   render(action) {
-    if (!action) return;
-
-    const context = this.context;
-    const { sizeOfBlock, moveDelta } = this.getArenaData();
+    const { sizeOfBlock } = this.getArenaData();
 
     switch (action.type) {
       case 'RENDER_PLAYER': {
-        const { color, positionX, positionY } = action;
+        const { positionX, positionY, color } = action;
         const x = positionX * (sizeOfBlock + 2);
         const y = positionY * (sizeOfBlock + 2);
 
-        context.fillStyle = color;
-        context.fillRect(x, y, sizeOfBlock, sizeOfBlock);
+        this.drawRect(x, y, color);
 
         return;
       }
 
       case 'MOVE_PLAYER': {
-        const { color, positionX, positionY, direction } = action;
-        const { x, y } = Game.movement(positionX, positionY, direction);
+        const { finishX, finishY, color } = action;
+        const x = finishX * (sizeOfBlock + 2);
+        const y = finishY * (sizeOfBlock + 2);
 
-        context.fillStyle = color;
-        context.fillRect(x * moveDelta, y * moveDelta,
-                         sizeOfBlock, sizeOfBlock);
+        this.drawRect(x, y, color);
 
         return;
       }
 
       default: return;
     }
-  }
+  },
+
+  redraw() {
+
+  },
+
+  drawRect(positionX, positionY, color) {
+    const { sizeOfBlock } = this.getArenaData();
+
+    this.context.fillStyle = color;
+    this.context.fillRect(positionX, positionY, sizeOfBlock, sizeOfBlock);
+  },
 
   getArenaData() {
     return {
@@ -57,14 +66,14 @@ export default class Renderer {
       sizeOfBlock:      65,
       moveDelta:        67,
     };
-  }
+  },
 
   clearArena() {
     const { width, height } = this.getArenaData();
     const context           = this.context;
 
     context.clearRect(0, 0, width, height);
-  }
+  },
 
   drawArena() {
     const { numberOfColumns, numberOfRows, sizeOfBlock } = this.getArenaData();
@@ -85,5 +94,5 @@ export default class Renderer {
                          sizeOfBlock, sizeOfBlock);
       }
     }
-  }
+  },
 }
