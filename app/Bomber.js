@@ -38,10 +38,12 @@ class Bomber extends Component {
       case 83: case 115: { this.props.movePlayer(0, 'DOWN');  break; }
       case 65: case 97:  { this.props.movePlayer(0, 'LEFT');  break; }
       case 68: case 100: { this.props.movePlayer(0, 'RIGTH'); break; }
+      case 32:           { this.props.createBomb(0);          break; }
       case 56:           { this.props.movePlayer(1, 'UP');    break; }
-      case 53:           { this.props.movePlayer(1, 'DOWN');  break; }
+      case 50:           { this.props.movePlayer(1, 'DOWN');  break; }
       case 52:           { this.props.movePlayer(1, 'LEFT');  break; }
       case 54:           { this.props.movePlayer(1, 'RIGTH'); break; }
+      case 53:           { this.props.createBomb(1);          break; }
       default: return;
     }
   }

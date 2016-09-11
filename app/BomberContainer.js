@@ -13,6 +13,7 @@ const mapDispatchToProps = (dispatch) => ({
   movePlayer: (playerId, direction) => dispatch(bomberActions.movePlayer(playerId, direction)),
   createBox: (positionX, positionY) => dispatch(bomberActions.createBox(positionX, positionY)),
   removeBox: (positionX, positionY) => dispatch(bomberActions.removeBox(positionX, positionY)),
+  createBomb: (playerId) => dispatch(bomberActions.createBomb(playerId)),
   clearArena: () => dispatch(bomberActions.clearArena()),
 });
 

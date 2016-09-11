@@ -10,7 +10,7 @@ export default class Renderer {
 
     if (!state) return;
 
-    const { players, bombs, boxes } = state;
+    const { players, boxes, bombs, splashes } = state;
 
     players.map(({ positionX, positionY, color}) => {
       this.drawRect(positionX, positionY, color);
@@ -18,6 +18,14 @@ export default class Renderer {
 
     boxes.map(({positionX, positionY}) => {
       this.drawRect(positionX, positionY, "rgba(78, 94, 95, 0.4)");
+    });
+
+    bombs.map(({positionX, positionY}) => {
+      this.drawRect(positionX, positionY, "rgba(255, 14, 10, 0.4)");
+    });
+
+    splashes.map(({positionX, positionY}) => {
+      this.drawRect(positionX, positionY, "rgba(250, 255, 10, 0.4)");
     });
   }
 
