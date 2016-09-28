@@ -68,14 +68,17 @@ const bomberReducer = (state = defaultState, action) => {
       const bombs   = state.bombs.slice();
       const player  = players[playerId];
 
-      // if (!Game.shouldPlantBomb(player, bombs) && player.numberOfBombs == 2)
-      //   return Object.assign({}, state, { players, bombs });
-      //
-      // player.numberOfBombs++;
+      const { positionX: x, positionY: y } = player;
+
+      if (Game.isBombHere(x, y, bombs) || player.numberOfBombs == 2)
+        return Object.assign({}, state, { players, bombs });
+
+      player.numberOfBombs += 1;
 
       const bomb    = {
         positionX: player.positionX,
         positionY: player.positionY,
+        bombId:    Date.now(),
       };
 
       const nextBombs = bombs.concat([bomb]);
@@ -87,6 +90,7 @@ const bomberReducer = (state = defaultState, action) => {
         () => {
           bomberStore.dispatch(bomberActions.removeBomb(positionX, positionY));
           bomberStore.dispatch(bomberActions.explodeBomb(positionX, positionY));
+          player.numberOfBombs -= 1;
         },
         3000
       );
@@ -95,6 +99,22 @@ const bomberReducer = (state = defaultState, action) => {
     }
 
     case 'EXPLODE_BOMB': {
+      const { positionX, positionY } = action.payload;
+
+      const boxes    = state.boxes.slice();
+      const splashes = state.splashes.slice();
+
+      const bombSplashes = Game.getSplashes(positionX, positionY, boxes);
+      const nextSplashes = splashes.concat(bombSplashes);
+
+      return Object.assign({}, state, { splashes: nextSplashes });
+    }
+
+    case 'CREATE_SPLASH': {
+
+    }
+
+    case 'REMOVE_SPLASH': {
 
     }
 
@@ -110,7 +130,7 @@ const bomberReducer = (state = defaultState, action) => {
     }
 
     case 'CLEAR_ARENA': {
-      return { players: [], boms: [], boxes: [] };
+      return { players: [], bombs: [], boxes: [], splashes: [] };
     }
 
     default:
