@@ -1,6 +1,7 @@
-import Game from './Game.js';
-import bomberActions from './bomberActions.js';
-import bomberStore from './store.js';
+import Game           from  './Game.js';
+import bomberActions  from  './bomberActions.js';
+import bomberStore    from  './store.js';
+import gameConfig     from  './gameConfig.js';
 
 const defaultState = {
   players:  [],
@@ -10,6 +11,8 @@ const defaultState = {
 };
 
 const bomberReducer = (state = defaultState, action) => {
+  const config = gameConfig.current;
+
   switch (action.type) {
     case 'CREATE_PLAYER': {
       const { positionX, positionY, color } = action.payload;
@@ -28,7 +31,7 @@ const bomberReducer = (state = defaultState, action) => {
       const bombs   = state.bombs.slice();
       const player  = players[playerId];
 
-      if(!player) return;
+      if(!player) return Object.assign({}, state);
 
       const { positionX, positionY } = player;
       const { finishX, finishY } = Game.movement(positionX, positionY,
@@ -50,17 +53,6 @@ const bomberReducer = (state = defaultState, action) => {
       return Object.assign({}, state, { boxes });
     }
 
-    case 'REMOVE_BOX': {
-      const { positionX, positionY } = action.payload;
-
-      const boxes     = state.boxes.slice();
-      const nextBoxes = boxes.filter(
-        (box) => box.positionX !== positionX && box.positionY !== positionY
-      );
-
-      return Object.assign({}, state, { boxes: nextBoxes });
-    }
-
     case 'CREATE_BOMB': {
       const { playerId } = action.payload;
 
@@ -70,7 +62,7 @@ const bomberReducer = (state = defaultState, action) => {
 
       const { positionX: x, positionY: y } = player;
 
-      if (Game.isBombHere(x, y, bombs) || player.numberOfBombs == 2)
+      if (Game.isBombHere(x, y, bombs) || player.numberOfBombs == config.maxUserBombNumber)
         return Object.assign({}, state, { players, bombs });
 
       player.numberOfBombs += 1;
@@ -83,50 +75,66 @@ const bomberReducer = (state = defaultState, action) => {
 
       const nextBombs = bombs.concat([bomb]);
 
-      const positionX = bomb.positionX;
-      const positionY = bomb.positionY;
-
       setTimeout(
         () => {
-          bomberStore.dispatch(bomberActions.removeBomb(positionX, positionY));
-          bomberStore.dispatch(bomberActions.explodeBomb(positionX, positionY));
+          bomberStore.dispatch(bomberActions.explodeBomb(bomb.bombId));
+          bomberStore.dispatch(bomberActions.removeBomb(bomb.bombId));
           player.numberOfBombs -= 1;
         },
-        3000
+        config.bombExplodeDelay
       );
 
       return Object.assign({}, state, { players, bombs: nextBombs });
     }
 
     case 'EXPLODE_BOMB': {
-      const { positionX, positionY } = action.payload;
+      const { bombId } = action.payload;
 
-      const boxes    = state.boxes.slice();
-      const splashes = state.splashes.slice();
+      const boxes        = state.boxes.slice();
+      const bombs        = state.bombs.slice();
+      const players      = state.players.slice();
+      const splashes     = state.splashes.slice();
 
-      const bombSplashes = Game.getSplashes(positionX, positionY, boxes);
+      const bomb         = bombs.filter((bomb) => bomb.bombId == bombId)[0];
+      const positionX    = bomb.positionX;
+      const positionY    = bomb.positionY;
+
+      const bombSplashes = Game.getSplashes(bombId, positionX, positionY, boxes);
       const nextSplashes = splashes.concat(bombSplashes);
+
+      const { nextBoxes, nextPlayers } = Game.explode(bombSplashes, boxes, players);
+
+      setTimeout(
+        () => {
+          bomberStore.dispatch(bomberActions.removeSplashes(bomb.bombId));
+        },
+        config.splashesRemoveDelay
+      );
+
+      return Object.assign({}, state, {
+        splashes: nextSplashes, boxes: nextBoxes, players: nextPlayers });
+    }
+
+    case 'REMOVE_SPLASHES': {
+      const { bombId } = action.payload;
+
+      const splashes     = state.splashes.slice();
+      const nextSplashes = splashes.filter((splash) => splash.bombId !== bombId);
 
       return Object.assign({}, state, { splashes: nextSplashes });
     }
 
-    case 'CREATE_SPLASH': {
-
-    }
-
-    case 'REMOVE_SPLASH': {
-
-    }
-
     case 'REMOVE_BOMB': {
-      const { positionX, positionY } = action.payload;
+      const { bombId } = action.payload;
 
-      const bombs     = state.bombs.slice();
-      const mextBombs = bombs.filter(
-        (bomb) => bomb.positionX !== positionX && bomb.positionY !== positionY
-      );
+      const bombs      = state.bombs.slice();
+      const mextBombs  = bombs.filter((bomb) => bomb.bombId !== bombId);
 
       return Object.assign({}, state, { bombs: mextBombs });
+    }
+
+    case 'END_GAME': {
+
     }
 
     case 'CLEAR_ARENA': {

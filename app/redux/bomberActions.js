@@ -55,22 +55,29 @@ export default {
     }
   },
 
-  removeBomb(positionX, positionY) {
+  removeBomb(bombId) {
     return {
       type: 'REMOVE_BOMB',
       payload: {
-        positionX,
-        positionY,
+        bombId,
       }
     }
   },
 
-  explodeBomb(positionX, positionY) {
+  explodeBomb(bombId) {
     return {
       type: 'EXPLODE_BOMB',
       payload: {
-        positionX,
-        positionY,
+        bombId,
+      }
+    }
+  },
+
+  removeSplashes(bombId) {
+    return {
+      type: 'REMOVE_SPLASHES',
+      payload: {
+        bombId,
       }
     }
   },

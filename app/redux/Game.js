@@ -1,9 +1,53 @@
 export default {
-  explode(positionX, positionY, boxes, bombs, players) {
+  explode(bombSplashes, boxes, players) {
 
+    const nextBoxes = boxes.filter((box) => {
+      return !bombSplashes.some((splash) => {
+        return (box.positionX === splash.positionX &&
+                box.positionY === splash.positionY);
+      });
+    });
+
+    const nextPlayers = players.filter((player) => {
+      return !bombSplashes.some((splash) => {
+        return (player.positionX === splash.positionX &&
+                player.positionY === splash.positionY);
+      });
+    });
+
+    return { nextBoxes, nextPlayers };
   },
 
-  getSplashes(positionX, positionY, boxes, bombs, players) {
+  isEnd(players) {
+    return (players.length <= 1);
+  },
+
+  getWinner(players) {
+    if(players.length === 1) {
+      const player  = players[0];
+      const color   = player.color;
+      const name    = this.getColorName(color);
+      const message = `${name} is winner!`;
+
+      return { winner: player , message };
+    }
+
+    if(players.length === 0)
+      return { winner: null,
+               message: 'Losers!',
+               letterColor: "rgba(255, 255, 255, 0.7)"
+             };
+  },
+
+  getColorName(colorCode) {
+    switch (colorCode) {
+      case "rgba(255, 153, 20, 0.4)": return "Orange";
+      case "rgba(20, 239, 255, 0.4)": return "Blue";
+      default:                        return "";
+    }
+  },
+
+  getSplashes(bombId, positionX, positionY, boxes, bombs, players) {
     const splashes = [];
 
     for (let counter = 0; counter < 4; counter++) {
@@ -15,7 +59,7 @@ export default {
 
             if (this.isEdge(x, y) || this.isColumnHere(x, y)) break;
 
-            splashes.push({ positionX: x, positionY: y });
+            splashes.push({ positionX: x, positionY: y, bombId });
 
             if (this.isBoxHere(x, y, boxes)) break;
           }
@@ -28,7 +72,7 @@ export default {
 
             if (this.isEdge(x, y) || this.isColumnHere(x, y)) break;
 
-            splashes.push({ positionX: x, positionY: y });
+            splashes.push({ positionX: x, positionY: y, bombId });
 
             if (this.isBoxHere(x, y, boxes)) break;
           }
@@ -41,7 +85,7 @@ export default {
 
             if (this.isEdge(x, y) || this.isColumnHere(x, y)) break;
 
-            splashes.push({ positionX: x, positionY: y });
+            splashes.push({ positionX: x, positionY: y, bombId });
 
             if (this.isBoxHere(x, y, boxes)) break;
           }
@@ -54,7 +98,7 @@ export default {
 
             if (this.isEdge(x, y) || this.isColumnHere(x, y)) break;
 
-            splashes.push({ positionX: x, positionY: y });
+            splashes.push({ positionX: x, positionY: y, bombId });
 
             if (this.isBoxHere(x, y, boxes)) break;
           }
@@ -62,7 +106,7 @@ export default {
       }
     }
 
-    splashes.push({ positionX, positionY });
+    splashes.push({ positionX, positionY, bombId });
 
     return splashes;
   },
