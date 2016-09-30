@@ -29,14 +29,15 @@ export default {
       const name    = this.getColorName(color);
       const message = `${name} is winner!`;
 
-      return { winner: player , message };
+      return { winner: player , message, letterColor: color };
     }
 
     if(players.length === 0)
-      return { winner: null,
-               message: 'Losers!',
-               letterColor: "rgba(255, 255, 255, 0.7)"
-             };
+      return {
+        winner: null,
+        message: 'Losers!',
+        letterColor: "rgba(255, 255, 255, 0.7)"
+      };
   },
 
   getColorName(colorCode) {

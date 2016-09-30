@@ -26,6 +26,23 @@ export default {
     }
   },
 
+  endGame(winner, message, letterColor) {
+    return {
+      type: 'END_GAME',
+      payload: {
+        winner,
+        message,
+        letterColor,
+      }
+    }
+  },
+
+  pauseGame() {
+    return {
+      type: 'PAUSE_GAME',
+    }
+  },
+
   createBox(positionX, positionY) {
     return {
       type: 'CREATE_BOX',

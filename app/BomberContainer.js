@@ -6,6 +6,8 @@ import Bomber from './Bomber.js';
 
 const mapStateToProps = (state) => ({
   canvasState: state,
+  isPause:     state.isPause,
+  isEnd:       state.isEnd,
 });
 
 const mapDispatchToProps = (dispatch) => ({
@@ -15,6 +17,7 @@ const mapDispatchToProps = (dispatch) => ({
   removeBox: (positionX, positionY) => dispatch(bomberActions.removeBox(positionX, positionY)),
   createBomb: (playerId) => dispatch(bomberActions.createBomb(playerId)),
   clearArena: () => dispatch(bomberActions.clearArena()),
+  pauseGame:  () => dispatch(bomberActions.pauseGame()),
 });
 
 const BomberContainer = connect(mapStateToProps, mapDispatchToProps)(Bomber);

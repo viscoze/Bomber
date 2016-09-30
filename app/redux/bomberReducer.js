@@ -1,4 +1,4 @@
-import Game           from  './Game.js';
+import Game           from  '../domain/Game.js';
 import bomberActions  from  './bomberActions.js';
 import bomberStore    from  './store.js';
 import gameConfig     from  './gameConfig.js';
@@ -8,6 +8,8 @@ const defaultState = {
   bombs:    [],
   boxes:    [],
   splashes: [],
+  isPause:  false,
+  isEnd:    false,
 };
 
 const bomberReducer = (state = defaultState, action) => {
@@ -134,7 +136,13 @@ const bomberReducer = (state = defaultState, action) => {
     }
 
     case 'END_GAME': {
+      const { winner, message, letterColor } = action.payload;
 
+      return Object.assign({}, state, { isEnd: true });
+    }
+
+    case 'PAUSE_GAME': {
+      return Object.assign({}, state, { isPause: !state.isPause });
     }
 
     case 'CLEAR_ARENA': {
