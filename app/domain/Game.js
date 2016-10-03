@@ -1,3 +1,5 @@
+import React from 'react';
+
 export default {
   explode(bombSplashes, boxes, players) {
 
@@ -22,28 +24,30 @@ export default {
     return (players.length <= 1);
   },
 
-  getWinner(players) {
+  isSplashHere(x, y, splashes) {
+    return splashes.some(splash => splash.positionX === x && splash.positionY === y);
+  },
+
+  getGameEndMessage(players) {
     if(players.length === 1) {
       const player  = players[0];
       const color   = player.color;
-      const name    = this.getColorName(color);
-      const message = `${name} is winner!`;
+      const name    = this.getNameByColor(color);
 
-      return { winner: player , message, letterColor: color };
+      return (<span className="victory">
+                <span className={name}>{name}</span> is the winner!
+              </span>);
     }
 
-    if(players.length === 0)
-      return {
-        winner: null,
-        message: 'Losers!',
-        letterColor: "rgba(255, 255, 255, 0.7)"
-      };
+    if(players.length === 0) {
+      return (<span className="losers">Losers!</span>);
+    }
   },
 
-  getColorName(colorCode) {
+  getNameByColor(colorCode) {
     switch (colorCode) {
-      case "rgba(255, 153, 20, 0.4)": return "Orange";
-      case "rgba(20, 239, 255, 0.4)": return "Blue";
+      case "rgba(255, 153, 20, 0.4)": return "orange";
+      case "rgba(20, 239, 255, 0.4)": return "blue";
       default:                        return "";
     }
   },
@@ -64,6 +68,7 @@ export default {
 
             if (this.isBoxHere(x, y, boxes)) break;
           }
+          break;
         }
 
         case 1: {
@@ -77,6 +82,7 @@ export default {
 
             if (this.isBoxHere(x, y, boxes)) break;
           }
+          break;
         }
 
         case 2: {
@@ -90,6 +96,7 @@ export default {
 
             if (this.isBoxHere(x, y, boxes)) break;
           }
+          break;
         }
 
         case 3: {
@@ -103,6 +110,7 @@ export default {
 
             if (this.isBoxHere(x, y, boxes)) break;
           }
+          break;
         }
       }
     }

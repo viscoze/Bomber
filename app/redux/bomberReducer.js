@@ -10,6 +10,7 @@ const defaultState = {
   splashes: [],
   isPause:  false,
   isEnd:    false,
+  message:  "",
 };
 
 const bomberReducer = (state = defaultState, action) => {
@@ -28,10 +29,11 @@ const bomberReducer = (state = defaultState, action) => {
     case 'MOVE_PLAYER': {
       const { playerId, direction } = action.payload;
 
-      const players = state.players.slice();
-      const boxes   = state.boxes.slice();
-      const bombs   = state.bombs.slice();
-      const player  = players[playerId];
+      const players  = state.players.slice();
+      const boxes    = state.boxes.slice();
+      const bombs    = state.bombs.slice();
+      const splashes = state.splashes.slice();
+      const player   = players[playerId];
 
       if(!player) return Object.assign({}, state);
 
@@ -42,6 +44,14 @@ const bomberReducer = (state = defaultState, action) => {
 
       player.positionX = finishX;
       player.positionY = finishY;
+
+      if (Game.isSplashHere(finishX, finishY, splashes)) {
+        const nextPlayers = players.filter(
+          player => player.positionX !== finishX && player.positionY !== finishY
+        );
+
+        return Object.assign({}, state, { players: nextPlayers });
+      }
 
       return Object.assign({}, state, { players });
     }
@@ -106,6 +116,15 @@ const bomberReducer = (state = defaultState, action) => {
 
       const { nextBoxes, nextPlayers } = Game.explode(bombSplashes, boxes, players);
 
+      if (Game.isEnd(nextPlayers)) {
+        const message = Game.getGameEndMessage(nextPlayers);
+        setTimeout(
+          () => {
+            bomberStore.dispatch(bomberActions.endGame(message));
+          }, 0
+        );
+      }
+
       setTimeout(
         () => {
           bomberStore.dispatch(bomberActions.removeSplashes(bomb.bombId));
@@ -136,9 +155,9 @@ const bomberReducer = (state = defaultState, action) => {
     }
 
     case 'END_GAME': {
-      const { winner, message, letterColor } = action.payload;
+      const { message } = action.payload;
 
-      return Object.assign({}, state, { isEnd: true });
+      return Object.assign({}, state, { isEnd: true, message  });
     }
 
     case 'PAUSE_GAME': {

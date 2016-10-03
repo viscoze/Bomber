@@ -1,0 +1,21 @@
+@import "variables.scss";
+
+.EndAlert {
+  position: absolute;
+  top: 20%;
+  text-align: center;
+  font-size: 130px;
+  color: rgba(white, 0.8);
+
+  .victory {
+    .blue   { color: rgba(20, 239, 255, 0.7); text-transform: capitalize; }
+    .orange { color: rgba(255, 153, 20, 0.7); text-transform: capitalize; }
+  }
+
+  .losers {
+    display: inline-block;
+    margin-left: 8%;
+    text-transform: capitalize;
+    font-size: 200px;
+  }
+}

@@ -26,13 +26,11 @@ export default {
     }
   },
 
-  endGame(winner, message, letterColor) {
+  endGame(message) {
     return {
       type: 'END_GAME',
       payload: {
-        winner,
         message,
-        letterColor,
       }
     }
   },
