@@ -2,7 +2,9 @@ import Game           from  '../domain/Game.js';
 import bomberActions  from  './bomberActions.js';
 import bomberStore    from  './store.js';
 import gameConfig     from  './gameConfig.js';
+import SoundManager   from '../domain/SoundManager.js';
 
+const soundEffectManager = new SoundManager();
 const defaultState = {
   players:  [],
   bombs:    [],
@@ -168,7 +170,7 @@ const bomberReducer = (state = defaultState, action) => {
     }
 
     case 'CLEAR_ARENA': {
-      return { players: [], bombs: [], boxes: [], splashes: [] };
+      return Object.assign({}, defaultState);
     }
 
     default:

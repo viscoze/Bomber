@@ -7,6 +7,8 @@ export default {
     musicSound:          10,
     letterColor:         "rgba(255, 255, 255, 0.7)",
     defaultDelayValue:   0,
+    musicFileURL:        "../assets/music/background_music.mp3",
+    soundFileURL:        "../assets/music/blow_sound.mp3",
   },
 
   default: {
@@ -17,5 +19,7 @@ export default {
     defaultMusicSound:   10,
     letterColor:         "rgba(255, 255, 255, 0.7)",
     defaultDelayValue:   0,
+    musicFileURL:        "../assets/music/background_music.mp3",
+    soundFileURL:        "../assets/music/blow_sound.mp3",
   },
 };

@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
-import ReactDOM   from 'react-dom';
-import Button     from './Button';
-import PauseAlert from './PauseAlert';
-import EndAlert   from './EndAlert';
-import Renderer   from './domain/Renderer.js';
+import ReactDOM     from 'react-dom';
+import Button       from './Button';
+import PauseAlert   from './PauseAlert';
+import EndAlert     from './EndAlert';
+import Renderer     from './domain/Renderer.js';
+import EventRouter  from './domain/EventRouter.js';
 import './styles/Bomber.scss';
 
 export default class Bomber extends Component {
@@ -30,7 +31,7 @@ export default class Bomber extends Component {
 
   handleKeypress(event) {
     if (this.props.isPause || this.props.isEnd) return;
-    
+
     switch (event.keyCode) {
       case 87:  case 119: { this.props.movePlayer(0, 'UP');    break; }
       case 83:  case 115: { this.props.movePlayer(0, 'DOWN');  break; }
