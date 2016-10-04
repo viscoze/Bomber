@@ -6,6 +6,7 @@ export default {
     bombSound:           10,
     musicSound:          10,
     letterColor:         "rgba(255, 255, 255, 0.7)",
+    defaultDelayValue:   0,
   },
 
   default: {
@@ -15,5 +16,6 @@ export default {
     defaultBombSound:    10,
     defaultMusicSound:   10,
     letterColor:         "rgba(255, 255, 255, 0.7)",
+    defaultDelayValue:   0,
   },
-}
+};

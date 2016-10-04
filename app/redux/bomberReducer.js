@@ -50,6 +50,12 @@ const bomberReducer = (state = defaultState, action) => {
           player => player.positionX !== finishX && player.positionY !== finishY
         );
 
+        const message = Game.getGameEndMessage(nextPlayers);
+        setTimeout(
+          () => bomberStore.dispatch(bomberActions.endGame(message)),
+          config.defaultDelayValue
+        );
+
         return Object.assign({}, state, { players: nextPlayers });
       }
 
@@ -100,7 +106,7 @@ const bomberReducer = (state = defaultState, action) => {
     }
 
     case 'EXPLODE_BOMB': {
-      const { bombId } = action.payload;
+      const { bombId }   = action.payload;
 
       const boxes        = state.boxes.slice();
       const bombs        = state.bombs.slice();
@@ -119,16 +125,13 @@ const bomberReducer = (state = defaultState, action) => {
       if (Game.isEnd(nextPlayers)) {
         const message = Game.getGameEndMessage(nextPlayers);
         setTimeout(
-          () => {
-            bomberStore.dispatch(bomberActions.endGame(message));
-          }, 0
+          () => bomberStore.dispatch(bomberActions.endGame(message)),
+          config.splashesRemoveDelay
         );
       }
 
       setTimeout(
-        () => {
-          bomberStore.dispatch(bomberActions.removeSplashes(bomb.bombId));
-        },
+        () => bomberStore.dispatch(bomberActions.removeSplashes(bomb.bombId)),
         config.splashesRemoveDelay
       );
 
