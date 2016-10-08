@@ -20,9 +20,9 @@ const bomberReducer = (state = defaultState, action) => {
 
   switch (action.type) {
     case 'CREATE_PLAYER': {
-      const { positionX, positionY, color } = action.payload;
+      const { positionX, positionY, color, numberOfBombs } = action.payload;
 
-      const player  = { positionX, positionY, color, numberOfBombs: 0 };
+      const player  = { positionX, positionY, color, numberOfBombs };
       const players = state.players.concat([player]);
 
       return Object.assign({}, state, { players });

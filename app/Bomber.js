@@ -11,10 +11,29 @@ export default class Bomber extends Component {
   constructor() {
     super();
 
-    this.handleKeypress = this.handleKeypress.bind(this);
+    this.eventRouter    = new EventRouter();
+    this.handleKeypress = this.eventRouter.handleKeypress.bind(this.eventRouter);
   }
 
   componentDidMount() {
+    this.drawGame();
+
+    window.addEventListener('keypress', this.handleKeypress);
+  }
+
+  componentWillUnmount() {
+    this.props.clearArena();
+    window.removeEventListener('keypress', this.handleKeypress);
+  }
+
+  componentWillReceiveProps(nextProps) {
+    this.eventRouter.setMethods(nextProps);
+    this.eventRouter.setData(nextProps.isPause, nextProps.isEnd);
+
+    this.renderer.render(nextProps.canvasState);
+  }
+
+  drawGame() {
     const createBox  = this.props.createBox.bind(this);
     const canvas     = ReactDOM.findDOMNode(this.refs.canvas);
 
@@ -25,35 +44,11 @@ export default class Bomber extends Component {
 
     this.props.createPlayer(0,  0, "rgba(255, 153, 20, 0.4)");
     this.props.createPlayer(10, 6, "rgba(20, 239, 255, 0.4)");
-
-    window.addEventListener('keypress', this.handleKeypress);
   }
 
-  handleKeypress(event) {
-    if (this.props.isPause || this.props.isEnd) return;
-
-    switch (event.keyCode) {
-      case 87:  case 119: { this.props.movePlayer(0, 'UP');    break; }
-      case 83:  case 115: { this.props.movePlayer(0, 'DOWN');  break; }
-      case 65:  case 97:  { this.props.movePlayer(0, 'LEFT');  break; }
-      case 68:  case 100: { this.props.movePlayer(0, 'RIGTH'); break; }
-      case 70:  case 102: { this.props.createBomb(0);          break; }
-      case 105: case 73:  { this.props.movePlayer(1, 'UP');    break; }
-      case 107: case 75:  { this.props.movePlayer(1, 'DOWN');  break; }
-      case 106: case 74:  { this.props.movePlayer(1, 'LEFT');  break; }
-      case 108: case 76:  { this.props.movePlayer(1, 'RIGTH'); break; }
-      case 58:  case 59:  { this.props.createBomb(1);          break; }
-      default: return;
-    }
-  }
-
-  componentWillUnmount() {
+  resetGame() {
     this.props.clearArena();
-    window.removeEventListener('keypress', this.handleKeypress);
-  }
-
-  componentWillReceiveProps(nextProps) {
-    this.renderer.render(nextProps.canvasState);
+    this.drawGame();
   }
 
   redirectToMenu() {
@@ -61,28 +56,36 @@ export default class Bomber extends Component {
     this.context.router.push('/');
   }
 
-  pauseGame() {
-    if (!this.props.isEnd) this.props.pauseGame();
-  }
-
   getPauseLabel() {
-    return <PauseAlert />
+    return <PauseAlert />;
   }
 
   getEndLabel() {
     return <EndAlert message={this.props.message} />;
   }
 
+  getSecondButton() {
+    const resetGame   = this.resetGame.bind(this);
+    const pauseGame   = this.props.pauseGame;
+
+    const label       = this.props.isEnd ? "Reset"   : "Pause";
+    const handleClick = this.props.isEnd ? resetGame : pauseGame;
+
+    return <Button label={label} handleClick={handleClick} />;
+  }
+
   render() {
+    const secondButton = this.getSecondButton();
+
     return (
       <div className="Bomber">
         <canvas ref="canvas" width="734px" height="475px" />
         <div className="button-panel">
           <Button label={"Back"}  handleClick={this.redirectToMenu.bind(this)} />
-          <Button label={"Pause"} handleClick={this.pauseGame.bind(this)} />
+          { secondButton }
         </div>
-        { this.props.isPause ? this.getPauseLabel() : "" }
-        { this.props.isEnd   ? this.getEndLabel()   : "" }
+        { this.props.isPause ? this.getPauseLabel() : null }
+        { this.props.isEnd   ? this.getEndLabel()   : null }
       </div>
     );
   }

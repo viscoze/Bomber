@@ -1,13 +1,16 @@
 export default class EventRouter {
-  constructor(methods) {
-    this.methods = methods;
-  }
-
   setMethods(methods) {
     this.methods = methods;
   }
 
+  setData(isPause, isEnd) {
+    this.isPause = isPause;
+    this.isEnd   = isEnd;
+  }
+
   handleKeypress(event) {
+    if (this.isPause || this.isEnd) return;
+
     switch (event.keyCode) {
       case 87:  case 119: { this.methods.movePlayer(0, 'UP');    break; }
       case 83:  case 115: { this.methods.movePlayer(0, 'DOWN');  break; }

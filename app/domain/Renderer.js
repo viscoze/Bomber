@@ -29,6 +29,15 @@ export default class Renderer {
     });
   }
 
+  drawImage(positionX, positionY, image) {
+    const { sizeOfBlock } = this.getArenaData();
+
+    const x = positionX * (sizeOfBlock + 2);
+    const y = positionY * (sizeOfBlock + 2);
+
+    this.context.drawImage(image, x, y, sizeOfBlock, sizeOfBlock);
+  }
+
   drawRect(positionX, positionY, color) {
     const { sizeOfBlock } = this.getArenaData();
 
@@ -51,14 +60,12 @@ export default class Renderer {
 
   clearArena() {
     const { width, height } = this.getArenaData();
-    const context           = this.context;
 
-    context.clearRect(0, 0, width, height);
+    this.context.clearRect(0, 0, width, height);
   }
 
   drawBoxes(createBox) {
     const { numberOfColumns, numberOfRows, sizeOfBlock } = this.getArenaData();
-    const context = this.context;
 
     for (let rowIndex = 0; rowIndex < numberOfRows; rowIndex++) {
       for (let columnIndex = 0; columnIndex < numberOfColumns; columnIndex++) {
@@ -74,7 +81,6 @@ export default class Renderer {
 
   drawArena() {
     const { numberOfColumns, numberOfRows, sizeOfBlock } = this.getArenaData();
-    const context = this.context;
 
     for (let rowIndex = 0; rowIndex < numberOfRows; rowIndex++) {
       for (let columnIndex = 0; columnIndex < numberOfColumns; columnIndex++) {

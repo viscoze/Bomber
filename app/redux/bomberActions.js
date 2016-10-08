@@ -1,11 +1,14 @@
+import Game from '../domain/Game.js';
+
 export default {
   createPlayer(startX, startY, color) {
     return {
       type: 'CREATE_PLAYER',
       payload: {
-        positionX: startX,
-        positionY: startY,
-        color:     color,
+        positionX:     startX,
+        positionY:     startY,
+        color:         color,
+        numberOfBombs: 0,
       }
     }
   },
