@@ -59,29 +59,28 @@ export default {
 
   createBomb(playerId) {
     return (dispatch, getState) => {
-      const state   = getState();
-      const players = state.players.slice();
-      const bombs   = state.bombs.slice();
-      const player  = players[playerId];
-      const bomb    = Game.createBomb(player);
+      const state     = getState();
+      const players   = state.players.slice();
+      const bombs     = state.bombs.slice();
+      const player    = players[playerId];
+      const bomb      = Game.createBomb(player);
+      const nextBombs = bombs.concat([bomb]);
 
       const { positionX: x, positionY: y } = player;
 
-      if (Game.isBombHere(x, y, bombs) || player.numberOfBombs == config.maxUserBombNumber) {
+      if (Game.isBombHere(x, y, bombs) ||
+          player.numberOfBombs == config.maxUserBombNumber)
         return dispatch({ type: 'NOTHING' });
-      }
 
       player.numberOfBombs += 1;
 
-      const nextBoxes = bombs.concat([bomb]);
+      dispatch({ type: 'CREATE_BOMB', payload: {players, bombs: nextBombs} });
 
       setTimeout(() => {
         dispatch(this.explodeBomb(bomb.bombId));
         dispatch(this.removeBomb(bomb.bombId));
         player.numberOfBombs -= 1;
       }, config.bombExplodeDelay);
-
-      dispatch({ type: 'CREATE_BOMB', payload: {players, bombs: nextBoxes} });
     };
   },
 
@@ -103,22 +102,18 @@ export default {
 
       const { nextBoxes, nextPlayers } = Game.explode(bombSplashes, boxes, players);
 
+      dispatch({ type: 'EXPLODE_BOMB',
+                 payload: { splashes: nextSplashes, boxes: nextBoxes, players: nextPlayers}});
+
       if (Game.isEnd(nextPlayers)) {
         const message = Game.getGameEndMessage(nextPlayers);
-        dispatch({ type: 'END_GAME', payload: {message} });
-        return;
+        return dispatch({ type: 'END_GAME', payload: {message} });
       }
 
       setTimeout(
         () => dispatch(this.removeSplashes(bomb.bombId)),
         config.splashesRemoveDelay
       );
-
-      dispatch({ type: 'EXPLODE_BOMB',
-                 payload: {
-                   splashes: nextSplashes,
-                   boxes: nextBoxes,
-                   players: nextPlayers}});
     };
   },
 

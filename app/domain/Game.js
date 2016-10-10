@@ -45,7 +45,7 @@ export default {
   },
 
   getGameEndMessage(players) {
-    if(players.length === 1) {
+    if (players.length === 1) {
       const player  = players[0];
       const color   = player.color;
       const name    = this.getNameByColor(color);
@@ -55,7 +55,7 @@ export default {
               </span>);
     }
 
-    if(players.length === 0) {
+    if (players.length === 0) {
       return (<span className="losers">Losers!</span>);
     }
   },
