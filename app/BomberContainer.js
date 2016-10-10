@@ -8,7 +8,7 @@ const mapStateToProps = (state) => ({
   canvasState: state,
   isPause:     state.isPause,
   isEnd:       state.isEnd,
-  message:     state.message,      
+  message:     state.message,
 });
 
 const mapDispatchToProps = (dispatch) => ({

@@ -2,7 +2,6 @@ import React from 'react';
 
 export default {
   explode(bombSplashes, boxes, players) {
-
     const nextBoxes = boxes.filter((box) => {
       return !bombSplashes.some((splash) => {
         return (box.positionX === splash.positionX &&
@@ -26,6 +25,23 @@ export default {
 
   isSplashHere(x, y, splashes) {
     return splashes.some(splash => splash.positionX === x && splash.positionY === y);
+  },
+
+  createBomb(player) {
+    return {
+      positionX: player.positionX,
+      positionY: player.positionY,
+      bombId:    Date.now(),
+    };
+  },
+
+  createPlayer(positionX, positionY, color) {
+    return {
+      positionX,
+      positionY,
+      color,
+      numberOfBombs: 0,
+    }
   },
 
   getGameEndMessage(players) {

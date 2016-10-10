@@ -1,10 +1,3 @@
-import Game           from  '../domain/Game.js';
-import bomberActions  from  './bomberActions.js';
-import bomberStore    from  './store.js';
-import gameConfig     from  './gameConfig.js';
-import SoundManager   from '../domain/SoundManager.js';
-
-const soundEffectManager = new SoundManager();
 const defaultState = {
   players:  [],
   bombs:    [],
@@ -16,161 +9,53 @@ const defaultState = {
 };
 
 const bomberReducer = (state = defaultState, action) => {
-  const config = gameConfig.current;
-
   switch (action.type) {
-    case 'CREATE_PLAYER': {
-      const { positionX, positionY, color, numberOfBombs } = action.payload;
-
-      const player  = { positionX, positionY, color, numberOfBombs };
-      const players = state.players.concat([player]);
-
-      return Object.assign({}, state, { players });
-    }
-
-    case 'MOVE_PLAYER': {
-      const { playerId, direction } = action.payload;
-
-      const players  = state.players.slice();
-      const boxes    = state.boxes.slice();
-      const bombs    = state.bombs.slice();
-      const splashes = state.splashes.slice();
-      const player   = players[playerId];
-
-      if(!player) return Object.assign({}, state);
-
-      const { positionX, positionY } = player;
-      const { finishX, finishY } = Game.movement(positionX, positionY,
-                                                 direction,
-                                                 boxes, bombs, players);
-
-      player.positionX = finishX;
-      player.positionY = finishY;
-
-      if (Game.isSplashHere(finishX, finishY, splashes)) {
-        const nextPlayers = players.filter(
-          player => player.positionX !== finishX && player.positionY !== finishY
-        );
-
-        const message = Game.getGameEndMessage(nextPlayers);
-        setTimeout(
-          () => bomberStore.dispatch(bomberActions.endGame(message)),
-          config.defaultDelayValue
-        );
-
-        return Object.assign({}, state, { players: nextPlayers });
-      }
-
+    case 'RENDER_PLAYERS': {
+      const { players } = action.payload;
       return Object.assign({}, state, { players });
     }
 
     case 'CREATE_BOX': {
-      const { positionX, positionY } = action.payload;
-
-      const box   = { positionX, positionY };
-      const boxes = state.boxes.concat([box]);
-
+      const { boxes } = action.payload;
       return Object.assign({}, state, { boxes });
     }
 
     case 'CREATE_BOMB': {
-      const { playerId } = action.payload;
-
-      const players = state.players.slice();
-      const bombs   = state.bombs.slice();
-      const player  = players[playerId];
-
-      const { positionX: x, positionY: y } = player;
-
-      if (Game.isBombHere(x, y, bombs) || player.numberOfBombs == config.maxUserBombNumber)
-        return Object.assign({}, state, { players, bombs });
-
-      player.numberOfBombs += 1;
-
-      const bomb    = {
-        positionX: player.positionX,
-        positionY: player.positionY,
-        bombId:    Date.now(),
-      };
-
-      const nextBombs = bombs.concat([bomb]);
-
-      setTimeout(
-        () => {
-          bomberStore.dispatch(bomberActions.explodeBomb(bomb.bombId));
-          bomberStore.dispatch(bomberActions.removeBomb(bomb.bombId));
-          player.numberOfBombs -= 1;
-        },
-        config.bombExplodeDelay
-      );
-
-      return Object.assign({}, state, { players, bombs: nextBombs });
+      const { players, bombs } = action.payload;
+      return Object.assign({}, state, { players, bombs });
     }
 
     case 'EXPLODE_BOMB': {
-      const { bombId }   = action.payload;
-
-      const boxes        = state.boxes.slice();
-      const bombs        = state.bombs.slice();
-      const players      = state.players.slice();
-      const splashes     = state.splashes.slice();
-
-      const bomb         = bombs.filter((bomb) => bomb.bombId == bombId)[0];
-      const positionX    = bomb.positionX;
-      const positionY    = bomb.positionY;
-
-      const bombSplashes = Game.getSplashes(bombId, positionX, positionY, boxes);
-      const nextSplashes = splashes.concat(bombSplashes);
-
-      const { nextBoxes, nextPlayers } = Game.explode(bombSplashes, boxes, players);
-
-      if (Game.isEnd(nextPlayers)) {
-        const message = Game.getGameEndMessage(nextPlayers);
-        setTimeout(
-          () => bomberStore.dispatch(bomberActions.endGame(message)),
-          config.splashesRemoveDelay
-        );
-      }
-
-      setTimeout(
-        () => bomberStore.dispatch(bomberActions.removeSplashes(bomb.bombId)),
-        config.splashesRemoveDelay
-      );
-
-      return Object.assign({}, state, {
-        splashes: nextSplashes, boxes: nextBoxes, players: nextPlayers });
+      const { splashes, boxes, players } = action.payload;
+      return Object.assign({}, state, { splashes, boxes, players });
     }
 
     case 'REMOVE_SPLASHES': {
-      const { bombId } = action.payload;
-
-      const splashes     = state.splashes.slice();
-      const nextSplashes = splashes.filter((splash) => splash.bombId !== bombId);
-
-      return Object.assign({}, state, { splashes: nextSplashes });
+      const { splashes } = action.payload;
+      return Object.assign({}, state, { splashes });
     }
 
     case 'REMOVE_BOMB': {
-      const { bombId } = action.payload;
-
-      const bombs      = state.bombs.slice();
-      const mextBombs  = bombs.filter((bomb) => bomb.bombId !== bombId);
-
-      return Object.assign({}, state, { bombs: mextBombs });
+      const { bombs } = action.payload;
+      return Object.assign({}, state, { bombs });
     }
 
     case 'END_GAME': {
       const { message } = action.payload;
-
-      return Object.assign({}, state, { isEnd: true, message  });
+      return Object.assign({}, state, { isEnd: true, message });
     }
 
     case 'PAUSE_GAME': {
-      return Object.assign({}, state, { isPause: !state.isPause });
+      const { isPause } = action.payload;
+      return Object.assign({}, state, { isPause });
     }
 
     case 'CLEAR_ARENA': {
       return Object.assign({}, defaultState);
+    }
+
+    case 'NOTHING': {
+      return state;
     }
 
     default:

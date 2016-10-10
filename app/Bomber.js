@@ -17,7 +17,6 @@ export default class Bomber extends Component {
 
   componentDidMount() {
     this.drawGame();
-
     window.addEventListener('keypress', this.handleKeypress);
   }
 
@@ -36,7 +35,6 @@ export default class Bomber extends Component {
   drawGame() {
     const createBox  = this.props.createBox.bind(this);
     const canvas     = ReactDOM.findDOMNode(this.refs.canvas);
-
     this.renderer    = new Renderer(canvas);
 
     this.renderer.render();

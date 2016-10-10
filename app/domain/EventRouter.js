@@ -10,7 +10,7 @@ export default class EventRouter {
 
   handleKeypress(event) {
     if (this.isPause || this.isEnd) return;
-
+    
     switch (event.keyCode) {
       case 87:  case 119: { this.methods.movePlayer(0, 'UP');    break; }
       case 83:  case 115: { this.methods.movePlayer(0, 'DOWN');  break; }
