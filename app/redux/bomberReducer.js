@@ -3,6 +3,7 @@ const defaultState = {
   bombs:    [],
   boxes:    [],
   splashes: [],
+  bonuses:  [],
   isPause:  false,
   isEnd:    false,
   message:  "",
@@ -25,9 +26,14 @@ const bomberReducer = (state = defaultState, action) => {
       return Object.assign({}, state, { players, bombs });
     }
 
+    case 'RENDER_BONUSES': {
+      const { bonuses } = action.payload;
+      return Object.assign({}, state, { bonuses });
+    }
+
     case 'EXPLODE_BOMB': {
-      const { splashes, boxes, players } = action.payload;
-      return Object.assign({}, state, { splashes, boxes, players });
+      const { splashes, boxes, players, bonuses } = action.payload;
+      return Object.assign({}, state, { splashes, boxes, players, bonuses });
     }
 
     case 'REMOVE_SPLASHES': {

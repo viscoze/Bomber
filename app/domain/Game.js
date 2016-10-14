@@ -1,7 +1,8 @@
 import React from 'react';
+import { getRandomBoolean, getRandomInteger } from './Helpers.js';
 
 export default {
-  explode(bombSplashes, boxes, players) {
+  explode(bombSplashes, boxes, players, bonuses) {
     const nextBoxes = boxes.filter((box) => {
       return !bombSplashes.some((splash) => {
         return (box.positionX === splash.positionX &&
@@ -16,7 +17,68 @@ export default {
       });
     });
 
-    return { nextBoxes, nextPlayers };
+    const nextBonuses = bonuses.filter((bonus) => {
+      return !bombSplashes.some((splash) => {
+        return (bonus.positionX === splash.positionX &&
+                bonus.positionY === splash.positionY);
+      });
+    });
+
+    return { nextBoxes, nextPlayers, nextBonuses };
+  },
+
+  getBonus(x, y, bonuses) {
+    return bonuses.filter(bonus => bonus.positionX === x && bonus.positionY === y)[0];
+  },
+
+  modifyPlayer(player, bonus) {
+    const { positionX: x, positionY: y } = player
+    const bonusType = bonus.type;
+
+    return { nextPlayers, nextBonuses };
+  },
+
+  setBonus(player, bonus) {
+    const bonusType = bonus.type;
+  },
+
+  createBonus(nextBoxes, prevBoxes) {
+    const deltaBoxes = this.getDeltaOfBoxesState(nextBoxes, prevBoxes);
+    const position   = this.getPositionForBonus(deltaBoxes);
+    const type       = this.generateTypeOfBonus();
+
+    if (!position) return;
+
+    return {
+      positionX: position.positionX,
+      positionY: position.positionY,
+      bonusId:   Date.now(),
+      type:      type,
+    };
+  },
+
+  generateTypeOfBonus() {
+    switch (getRandomInteger(0,1)) {
+      case 0: return 'plus-one-splash';
+      case 1: return 'plus-one-bomb';
+    }
+  },
+
+  getDeltaOfBoxesState(nextBoxes, prevBoxes) {
+    return prevBoxes.filter((box) => {
+      return !nextBoxes.some((nextBox) => {
+        return (box.positionX === nextBox.positionX &&
+                box.positionY === nextBox.positionY);
+      });
+    });
+  },
+
+  getPositionForBonus(deltaBoxes) {
+    return deltaBoxes[getRandomInteger(0, deltaBoxes.length - 1)];
+  },
+
+  isBonusHere(x, y, bonuses) {
+    return bonuses.some(bonus => bonus.positionX === x && bonus.positionY === y);
   },
 
   isEnd(players) {
@@ -68,13 +130,13 @@ export default {
     }
   },
 
-  getSplashes(bombId, positionX, positionY, boxes, bombs, players) {
+  getSplashes(bombId, positionX, positionY, boxes, maxLength=3) {
     const splashes = [];
 
     for (let counter = 0; counter < 4; counter++) {
       switch (counter) {
         case 0: {
-          for (let index = -1; index > -3; index--) {
+          for (let index = -1; index > -maxLength; index--) {
             const x = positionX;
             const y = positionY + index;
 
@@ -88,7 +150,7 @@ export default {
         }
 
         case 1: {
-          for (let index = 1; index < 3; index++) {
+          for (let index = 1; index < maxLength; index++) {
             const x = positionX + index;
             const y = positionY;
 
@@ -102,7 +164,7 @@ export default {
         }
 
         case 2: {
-          for (let index = 1; index < 3; index++) {
+          for (let index = 1; index < maxLength; index++) {
             const x = positionX;
             const y = positionY + index;
 
@@ -116,7 +178,7 @@ export default {
         }
 
         case 3: {
-          for (let index = -1; index > -3; index--) {
+          for (let index = -1; index > -maxLength; index--) {
             const x = positionX + index;
             const y = positionY;
 

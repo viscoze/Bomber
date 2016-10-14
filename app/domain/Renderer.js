@@ -1,3 +1,6 @@
+import { getRandomBoolean } from './Helpers.js';
+import config               from '../redux/gameConfig.js';
+
 export default class Renderer {
   constructor(canvas) {
     this.canvas  = canvas;
@@ -10,42 +13,42 @@ export default class Renderer {
 
     if (!state) return;
 
-    const { players, boxes, bombs, splashes } = state;
+    const { players, boxes, bombs, splashes, bonuses } = state;
+    const { sizeOfBlock }                = this.getArenaData();
+    const { sizeOfPlayer, deltaOfPlayer} = this.getArenaData();
+    const { sizeOfBomb, deltaOfBomb }    = this.getArenaData();
+    const { sizeOfBonus, deltaOfBonus }  = this.getArenaData();
+    const { colorOfBox, colorOfBomb, colorOfSplash, colorOfBonus } = config.colors;
 
     players.map(({ positionX, positionY, color}) => {
-      this.drawRect(positionX, positionY, color);
+      this.drawRect(positionX, positionY, color, sizeOfPlayer, deltaOfPlayer);
     });
 
     boxes.map(({positionX, positionY}) => {
-      this.drawRect(positionX, positionY, "rgba(78, 94, 95, 0.4)");
+      this.drawRect(positionX, positionY, colorOfBox);
     });
 
     bombs.map(({positionX, positionY}) => {
-      this.drawRect(positionX, positionY, "rgba(255, 14, 10, 0.4)");
+      this.drawRect(positionX, positionY, colorOfBomb, sizeOfBomb, deltaOfBomb);
     });
 
     splashes.map(({positionX, positionY}) => {
-      this.drawRect(positionX, positionY, "rgba(250, 255, 10, 0.4)");
+      this.drawRect(positionX, positionY, colorOfSplash, sizeOfBomb, deltaOfBomb);
+    });
+
+    bonuses.map(({positionX, positionY}) => {
+      this.drawRect(positionX, positionY, colorOfBonus, sizeOfBonus, deltaOfBonus);
     });
   }
 
-  drawImage(positionX, positionY, image) {
+  drawRect(positionX, positionY, color, size = 65, delta = 0) {
     const { sizeOfBlock } = this.getArenaData();
 
-    const x = positionX * (sizeOfBlock + 2);
-    const y = positionY * (sizeOfBlock + 2);
-
-    this.context.drawImage(image, x, y, sizeOfBlock, sizeOfBlock);
-  }
-
-  drawRect(positionX, positionY, color) {
-    const { sizeOfBlock } = this.getArenaData();
-
-    const x = positionX * (sizeOfBlock + 2);
-    const y = positionY * (sizeOfBlock + 2);
+    const x = positionX * (sizeOfBlock + 2) + delta;
+    const y = positionY * (sizeOfBlock + 2) + delta;
 
     this.context.fillStyle = color;
-    this.context.fillRect(x, y, sizeOfBlock, sizeOfBlock);
+    this.context.fillRect(x, y, size, size);
   }
 
   getArenaData() {
@@ -55,12 +58,17 @@ export default class Renderer {
       numberOfColumns:  11,
       numberOfRows:     7,
       sizeOfBlock:      65,
+      sizeOfPlayer:     55,
+      sizeOfBonus:      35,
+      sizeOfBomb:       45,
+      deltaOfPlayer:    5,
+      deltaOfBonus:     15,
+      deltaOfBomb:      10,
     };
   }
 
   clearArena() {
     const { width, height } = this.getArenaData();
-
     this.context.clearRect(0, 0, width, height);
   }
 
@@ -73,7 +81,7 @@ export default class Renderer {
         if (rowIndex <= 1 && columnIndex <= 1) continue;
         if (rowIndex >= 5 && columnIndex >= 9) continue;
 
-        if (this.getRandomBoolean())
+        if (getRandomBoolean())
           createBox(columnIndex, rowIndex);
       }
     }
@@ -84,21 +92,13 @@ export default class Renderer {
 
     for (let rowIndex = 0; rowIndex < numberOfRows; rowIndex++) {
       for (let columnIndex = 0; columnIndex < numberOfColumns; columnIndex++) {
-
         if (rowIndex % 2 !== 0 && columnIndex % 2 !== 0) {
-          this.drawRect(columnIndex, rowIndex, "rgba(255,255,255, 0.7)");
+          this.drawRect(columnIndex, rowIndex, "rgba(255,255,255, 0.7)", sizeOfBlock);
           continue;
         }
 
-        this.drawRect(columnIndex, rowIndex, "rgba(255,255,255, 0.4)");
+        this.drawRect(columnIndex, rowIndex, "rgba(255,255,255, 0.4)", sizeOfBlock);
       }
     }
-  }
-
-  getRandomBoolean(minEdge = 0, maxEdge = 99) {
-    const min    = Math.ceil(minEdge);
-    const max    = Math.floor(maxEdge);
-    const result = Math.floor(Math.random() * (max - min)) + min
-    return !(result % 2 == 0);
   }
 }

@@ -3,8 +3,8 @@ import SoundEffectManager from 'sound-effect-manager';
 
 export default class SoundManager {
   construct() {
-    const musicFileURL = gameConfig.current.musicFileURL;
-    const soundFileURL = gameConfig.current.soundFileURL;
+    const musicFileURL = gameConfig.musicFileURL;
+    const soundFileURL = gameConfig.soundFileURL;
 
     this.soundEffectManager = new SoundEffectManager();
     this.soundEffectManager.loadFile(musicFileURL, 'music');

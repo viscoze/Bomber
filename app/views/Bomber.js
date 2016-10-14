@@ -3,8 +3,8 @@ import ReactDOM     from 'react-dom';
 import Button       from './Button';
 import PauseAlert   from './PauseAlert';
 import EndAlert     from './EndAlert';
-import Renderer     from './domain/Renderer.js';
-import EventRouter  from './domain/EventRouter.js';
+import Renderer     from '../domain/Renderer.js';
+import EventRouter  from '../domain/EventRouter.js';
 import './styles/Bomber.scss';
 
 export default class Bomber extends Component {

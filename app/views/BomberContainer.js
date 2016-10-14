@@ -1,8 +1,8 @@
-import React, { Component } from 'react';
+import React, { Component }  from 'react';
 import { connect, Provider } from 'react-redux';
-import bomberActions from './redux/bomberActions.js';
-import bomberStore from './redux/store.js';
-import Bomber from './Bomber.js';
+import bomberActions         from '../redux/bomberActions.js';
+import bomberStore           from '../redux/store.js';
+import Bomber                from './Bomber.js';
 
 const mapStateToProps = (state) => ({
   canvasState: state,

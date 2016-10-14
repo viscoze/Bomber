@@ -1,7 +1,7 @@
-import Game       from '../domain/Game.js';
-import gameConfig from  './gameConfig.js';
-
-const config = gameConfig.current;
+import Game                 from '../domain/Game.js';
+import config               from  './gameConfig.js';
+import { getRandomInteger } from '../domain/Helpers.js';
+import { getRandomBoolean } from '../domain/Helpers.js';
 
 export default {
   createPlayer(startX, startY, color) {
@@ -22,6 +22,7 @@ export default {
       const boxes    = state.boxes.slice();
       const bombs    = state.bombs.slice();
       const splashes = state.splashes.slice();
+      const bonuses  = state.bonuses.slice();
       const player   = players[playerId];
 
       if (!player) return dispatch({ type: 'NOTHING' });
@@ -41,6 +42,14 @@ export default {
         dispatch({ type: 'RENDER_PLAYERS', payload: {players: nextPlayers} });
         dispatch({ type: 'END_GAME', payload: {message} });
         return;
+      }
+
+      if (Game.isBonusHere(finishX, finishY, bonuses)) {
+        const bonus                        = Game.getBonus(finishX, finishY, bonuses);
+        const { nextPlayers, nextBonuses } = Game.modifyPlayer(player, bonus);
+
+        dispatch({ type: 'RENDER_PLAYERS', payload: {players: nextPlayers} });
+        dispatch({ type: 'RENDER_BONUSES', payload: {bonuses: nextBonuses} });
       }
 
       dispatch({ type: 'RENDER_PLAYERS', payload: {players} });
@@ -92,6 +101,7 @@ export default {
       const bombs        = state.bombs.slice();
       const players      = state.players.slice();
       const splashes     = state.splashes.slice();
+      const bonuses      = state.bonuses.slice();
 
       const bomb         = bombs.filter((bomb) => bomb.bombId == bombId)[0];
       const positionX    = bomb.positionX;
@@ -100,10 +110,20 @@ export default {
       const bombSplashes = Game.getSplashes(bombId, positionX, positionY, boxes);
       const nextSplashes = splashes.concat(bombSplashes);
 
-      const { nextBoxes, nextPlayers } = Game.explode(bombSplashes, boxes, players);
+      const { nextBoxes, nextPlayers, nextBonuses } = Game.explode(
+        bombSplashes, boxes, players, bonuses);
+      const bonus = Game.createBonus(nextBoxes, boxes);
 
       dispatch({ type: 'EXPLODE_BOMB',
-                 payload: { splashes: nextSplashes, boxes: nextBoxes, players: nextPlayers}});
+                 payload: {
+                   splashes: nextSplashes,
+                   boxes:    nextBoxes,
+                   players:  nextPlayers,
+                   bonuses:  nextBonuses,
+                 }});
+
+      if (getRandomBoolean() && bonus)
+        dispatch(this.createBonus(bonus));
 
       if (Game.isEnd(nextPlayers)) {
         const message = Game.getGameEndMessage(nextPlayers);
@@ -117,23 +137,46 @@ export default {
     };
   },
 
-  removeSplashes(bombId) {
-    return (dispatch, getState) => {
-      const state        = getState();
-      const splashes     = state.splashes.slice();
-      const nextSplashes = splashes.filter((splash) => splash.bombId !== bombId);
-
-      dispatch({ type: 'REMOVE_SPLASHES', payload: {splashes: nextSplashes} });
-    };
-  },
-
   removeBomb(bombId) {
     return (dispatch, getState) => {
       const state      = getState();
       const bombs      = state.bombs.slice();
-      const nextBombs  = bombs.filter((bomb) => bomb.bombId !== bombId);
+      const nextBombs  = bombs.filter(bomb => bomb.bombId !== bombId);
 
       dispatch({ type: 'REMOVE_BOMB', payload: {bombs: nextBombs} });
+    };
+  },
+
+  createBonus(bonus) {
+    return (dispatch, getState) => {
+      const state   = getState();
+      const bonuses = state.bonuses.concat([bonus]);
+      dispatch({ type: 'RENDER_BONUSES', payload: {bonuses} });
+
+      setTimeout(
+        () => dispatch(this.removeBonus(bonus.bonusId)),
+        config.bonusExpireDelay
+      );
+    };
+  },
+
+  removeBonus(bonusId) {
+    return (dispatch, getState) => {
+      const state       = getState();
+      const bonuses     = state.bonuses.slice();
+      const nextBonuses = bonuses.filter(bonus => bonus.bonusId !== bonusId);
+
+      dispatch({ type: 'RENDER_BONUSES', payload: {bonuses: nextBonuses} });
+    };
+  },
+
+  removeSplashes(bombId) {
+    return (dispatch, getState) => {
+      const state        = getState();
+      const splashes     = state.splashes.slice();
+      const nextSplashes = splashes.filter(splash => splash.bombId !== bombId);
+
+      dispatch({ type: 'REMOVE_SPLASHES', payload: {splashes: nextSplashes} });
     };
   },
 
