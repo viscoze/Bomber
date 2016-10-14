@@ -45,10 +45,13 @@ export default {
       }
 
       if (Game.isBonusHere(finishX, finishY, bonuses)) {
-        const bonus                        = Game.getBonus(finishX, finishY, bonuses);
-        const { nextPlayers, nextBonuses } = Game.modifyPlayer(player, bonus);
+        const bonus       = Game.getBonus(finishX, finishY, bonuses);
+        const bonusId     = bonus.bonusId;
+        const nextBonuses = bonuses.filter(bonus => bonus.bonusId !== bonusId);
+        const nextPlayer  = Game.modifyPlayer(player, bonus);
+        players[playerId] = nextPlayer;
 
-        dispatch({ type: 'RENDER_PLAYERS', payload: {players: nextPlayers} });
+        dispatch({ type: 'RENDER_PLAYERS', payload: {players} });
         dispatch({ type: 'RENDER_BONUSES', payload: {bonuses: nextBonuses} });
       }
 
@@ -78,7 +81,7 @@ export default {
       const { positionX: x, positionY: y } = player;
 
       if (Game.isBombHere(x, y, bombs) ||
-          player.numberOfBombs == config.maxUserBombNumber)
+          player.numberOfBombs == player.maxNumberOfBombs)
         return dispatch({ type: 'NOTHING' });
 
       player.numberOfBombs += 1;
@@ -86,14 +89,14 @@ export default {
       dispatch({ type: 'CREATE_BOMB', payload: {players, bombs: nextBombs} });
 
       setTimeout(() => {
-        dispatch(this.explodeBomb(bomb.bombId));
+        dispatch(this.explodeBomb(bomb.bombId, player.numberOfSplashes));
         dispatch(this.removeBomb(bomb.bombId));
         player.numberOfBombs -= 1;
       }, config.bombExplodeDelay);
     };
   },
 
-  explodeBomb(bombId) {
+  explodeBomb(bombId, numberOfSplashes) {
     return (dispatch, getState) => {
       const state        = getState();
 
@@ -107,7 +110,8 @@ export default {
       const positionX    = bomb.positionX;
       const positionY    = bomb.positionY;
 
-      const bombSplashes = Game.getSplashes(bombId, positionX, positionY, boxes);
+      const bombSplashes = Game.getSplashes(bombId, positionX, positionY,
+                                            boxes, numberOfSplashes);
       const nextSplashes = splashes.concat(bombSplashes);
 
       const { nextBoxes, nextPlayers, nextBonuses } = Game.explode(

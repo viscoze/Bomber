@@ -9,55 +9,55 @@ const defaultState = {
   message:  "",
 };
 
-const bomberReducer = (state = defaultState, action) => {
+export default (state = defaultState, action) => {
   switch (action.type) {
     case 'RENDER_PLAYERS': {
       const { players } = action.payload;
-      return Object.assign({}, state, { players });
+      return { ...state, players };
     }
 
     case 'CREATE_BOX': {
       const { boxes } = action.payload;
-      return Object.assign({}, state, { boxes });
+      return { ...state, boxes };
     }
 
     case 'CREATE_BOMB': {
       const { players, bombs } = action.payload;
-      return Object.assign({}, state, { players, bombs });
+      return { ...state, players, bombs };
     }
 
     case 'RENDER_BONUSES': {
       const { bonuses } = action.payload;
-      return Object.assign({}, state, { bonuses });
+      return { ...state, bonuses };
     }
 
     case 'EXPLODE_BOMB': {
       const { splashes, boxes, players, bonuses } = action.payload;
-      return Object.assign({}, state, { splashes, boxes, players, bonuses });
+      return { ...state, splashes, boxes, players, bonuses };
     }
 
     case 'REMOVE_SPLASHES': {
       const { splashes } = action.payload;
-      return Object.assign({}, state, { splashes });
+      return { ...state, splashes };
     }
 
     case 'REMOVE_BOMB': {
       const { bombs } = action.payload;
-      return Object.assign({}, state, { bombs });
+      return { ...state, bombs };
     }
 
     case 'END_GAME': {
       const { message } = action.payload;
-      return Object.assign({}, state, { isEnd: true, message });
+      return { ...state, isEnd: true, message };
     }
 
     case 'PAUSE_GAME': {
       const { isPause } = action.payload;
-      return Object.assign({}, state, { isPause });
+      return { ...state, isPause };
     }
 
     case 'CLEAR_ARENA': {
-      return Object.assign({}, defaultState);
+      return { ...defaultState };
     }
 
     case 'NOTHING': {
@@ -68,5 +68,3 @@ const bomberReducer = (state = defaultState, action) => {
       return state;
   }
 };
-
-export default bomberReducer;

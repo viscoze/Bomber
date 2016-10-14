@@ -28,18 +28,17 @@ export default {
   },
 
   getBonus(x, y, bonuses) {
-    return bonuses.filter(bonus => bonus.positionX === x && bonus.positionY === y)[0];
+    return bonuses.filter(bonus => bonus.positionX === x &&
+                                   bonus.positionY === y)[0];
   },
 
   modifyPlayer(player, bonus) {
-    const { positionX: x, positionY: y } = player
-    const bonusType = bonus.type;
-
-    return { nextPlayers, nextBonuses };
-  },
-
-  setBonus(player, bonus) {
-    const bonusType = bonus.type;
+    switch (bonus.type) {
+      case 'plus-one-splash':
+        return  { ...player, numberOfSplashes: player.numberOfSplashes + 1 };
+      case 'plus-one-bomb':
+        return  { ...player, numberOfSplashes: player.maxNumberOfBombs + 1 };
+    }
   },
 
   createBonus(nextBoxes, prevBoxes) {
@@ -58,7 +57,7 @@ export default {
   },
 
   generateTypeOfBonus() {
-    switch (getRandomInteger(0,1)) {
+    switch (getRandomInteger(0,2)) {
       case 0: return 'plus-one-splash';
       case 1: return 'plus-one-bomb';
     }
@@ -97,12 +96,14 @@ export default {
     };
   },
 
-  createPlayer(positionX, positionY, color) {
+  createPlayer(positionX, positionY, color, maxNumberOfBombs = 2, numberOfSplashes = 2) {
     return {
       positionX,
       positionY,
       color,
       numberOfBombs: 0,
+      maxNumberOfBombs,
+      numberOfSplashes,
     }
   },
 
@@ -130,8 +131,9 @@ export default {
     }
   },
 
-  getSplashes(bombId, positionX, positionY, boxes, maxLength=3) {
-    const splashes = [];
+  getSplashes(bombId, positionX, positionY, boxes, numberOfSplashes) {
+    const splashes  = [];
+    const maxLength = numberOfSplashes + 1;
 
     for (let counter = 0; counter < 4; counter++) {
       switch (counter) {
