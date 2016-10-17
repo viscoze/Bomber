@@ -36,8 +36,9 @@ export default class Renderer {
       this.drawRect(positionX, positionY, colorOfSplash, sizeOfBomb, deltaOfBomb);
     });
 
-    bonuses.map(({positionX, positionY}) => {
+    bonuses.map(({positionX, positionY, type}) => {
       this.drawRect(positionX, positionY, colorOfBonus, sizeOfBonus, deltaOfBonus);
+      this.drawTypeOfBonus(positionX, positionY, type);
     });
   }
 
@@ -51,6 +52,29 @@ export default class Renderer {
     this.context.fillRect(x, y, size, size);
   }
 
+  drawTypeOfBonus(positionX, positionY, type) {
+    const { colorOfBomb, colorOfSplash }         = config.colors;
+    const { colorOfCell }                        = config.colors;
+    const { sizeOfBonusType, deltaOfBonusType }  = this.getArenaData();
+    
+    this.drawRect(positionX, positionY, colorOfCell,
+                  sizeOfBonusType, deltaOfBonusType);
+
+    switch (type) {
+      case 'plus-one-splash': {
+        this.drawRect(positionX, positionY, colorOfSplash,
+                      sizeOfBonusType, deltaOfBonusType);
+        break;
+      }
+
+      case 'plus-one-bomb': {
+        this.drawRect(positionX, positionY, colorOfBomb,
+                      sizeOfBonusType, deltaOfBonusType);
+        break;
+      }
+    }
+  }
+
   getArenaData() {
     return {
       width:            this.canvas.width,
@@ -61,9 +85,11 @@ export default class Renderer {
       sizeOfPlayer:     55,
       sizeOfBonus:      35,
       sizeOfBomb:       45,
+      sizeOfBonusType:  25,
       deltaOfPlayer:    5,
       deltaOfBonus:     15,
       deltaOfBomb:      10,
+      deltaOfBonusType: 20,
     };
   }
 

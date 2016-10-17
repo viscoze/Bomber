@@ -17,5 +17,7 @@ export default {
     colorOfBox:           "rgba(78, 94, 95, 0.4)",
     colorOfBonus:         "rgba(127, 0, 255, 0.4)",
     colorOfBomb:          "rgba(255, 14, 10, 0.4)",
+    colorOfCell:          "rgba(255,255,255, 0.4)",
+    colorOfColumn:        "rgba(255,255,255, 0.7)",
   },
 };

@@ -37,7 +37,7 @@ export default {
       case 'plus-one-splash':
         return  { ...player, numberOfSplashes: player.numberOfSplashes + 1 };
       case 'plus-one-bomb':
-        return  { ...player, numberOfSplashes: player.maxNumberOfBombs + 1 };
+        return  { ...player, maxNumberOfBombs: player.maxNumberOfBombs + 1 };
     }
   },
 
