@@ -1,9 +1,9 @@
 Bomber
 =====================
 
-Modern version of legendary Bomberman game.
+A modern version of the legendary Bomberman game.
 
-![bomber](bomber.png)
+![bomber](bomber-full.png)
 
 ### Objective
 
@@ -12,6 +12,7 @@ Redux and Canvas.
 
 ### Control
 
+```
 #### Orange Player
 
 WASD - movement
@@ -21,6 +22,7 @@ F    - plant a bomb
 
 IJKL - movement
 ;    - plant a bomb
+```
 
 ### Usage
 **Clone this repository**
