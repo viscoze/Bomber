@@ -12,14 +12,14 @@ Redux and Canvas.
 
 ### Control
 
-```
-#### Orange Player
 
+* Orange Player
+```
 WASD - movement
 F    - plant a bomb
-
-#### Blue Player
-
+```
+* Blue Player
+```
 IJKL - movement
 ;    - plant a bomb
 ```
