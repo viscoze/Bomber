@@ -14,10 +14,10 @@ export default class Renderer {
     if (!state) return;
 
     const { players, boxes, bombs, splashes, bonuses } = state;
-    const { sizeOfBlock }                = this.getArenaData();
-    const { sizeOfPlayer, deltaOfPlayer} = this.getArenaData();
-    const { sizeOfBomb, deltaOfBomb }    = this.getArenaData();
-    const { sizeOfBonus, deltaOfBonus }  = this.getArenaData();
+    const { sizeOfBlock }                = config.arenaData;
+    const { sizeOfPlayer, deltaOfPlayer} = config.arenaData;
+    const { sizeOfBomb, deltaOfBomb }    = config.arenaData;
+    const { sizeOfBonus, deltaOfBonus }  = config.arenaData;
     const { colorOfBox, colorOfBomb, colorOfSplash, colorOfBonus } = config.colors;
 
     players.map(({ positionX, positionY, color}) => {
@@ -43,7 +43,7 @@ export default class Renderer {
   }
 
   drawRect(positionX, positionY, color, size = 65, delta = 0) {
-    const { sizeOfBlock } = this.getArenaData();
+    const { sizeOfBlock } = config.arenaData;
 
     const x = positionX * (sizeOfBlock + 2) + delta;
     const y = positionY * (sizeOfBlock + 2) + delta;
@@ -52,11 +52,20 @@ export default class Renderer {
     this.context.fillRect(x, y, size, size);
   }
 
+  drawImage(positionX, positionY, image, size = 65, delta = 0) {
+    const { sizeOfBlock } = config.arenaData;
+
+    const x = positionX * (sizeOfBlock + 2) + delta;
+    const y = positionY * (sizeOfBlock + 2) + delta;
+
+    this.context.drawImage(image, x, y, size, size);
+  }
+
   drawTypeOfBonus(positionX, positionY, type) {
     const { colorOfBomb, colorOfSplash }         = config.colors;
     const { colorOfCell }                        = config.colors;
-    const { sizeOfBonusType, deltaOfBonusType }  = this.getArenaData();
-    
+    const { sizeOfBonusType, deltaOfBonusType }  = config.arenaData;
+
     this.drawRect(positionX, positionY, colorOfCell,
                   sizeOfBonusType, deltaOfBonusType);
 
@@ -75,31 +84,13 @@ export default class Renderer {
     }
   }
 
-  getArenaData() {
-    return {
-      width:            this.canvas.width,
-      height:           this.canvas.height,
-      numberOfColumns:  11,
-      numberOfRows:     7,
-      sizeOfBlock:      65,
-      sizeOfPlayer:     55,
-      sizeOfBonus:      35,
-      sizeOfBomb:       45,
-      sizeOfBonusType:  25,
-      deltaOfPlayer:    5,
-      deltaOfBonus:     15,
-      deltaOfBomb:      10,
-      deltaOfBonusType: 20,
-    };
-  }
-
   clearArena() {
-    const { width, height } = this.getArenaData();
+    const { width, height } = config.arenaData;
     this.context.clearRect(0, 0, width, height);
   }
 
   drawBoxes(createBox) {
-    const { numberOfColumns, numberOfRows, sizeOfBlock } = this.getArenaData();
+    const { numberOfColumns, numberOfRows, sizeOfBlock } = config.arenaData;
 
     for (let rowIndex = 0; rowIndex < numberOfRows; rowIndex++) {
       for (let columnIndex = 0; columnIndex < numberOfColumns; columnIndex++) {
@@ -114,16 +105,17 @@ export default class Renderer {
   }
 
   drawArena() {
-    const { numberOfColumns, numberOfRows, sizeOfBlock } = this.getArenaData();
+    const { numberOfColumns, numberOfRows, sizeOfBlock } = config.arenaData;
+    const { colorOfCell, colorOfColumn } = config.colors;
 
     for (let rowIndex = 0; rowIndex < numberOfRows; rowIndex++) {
       for (let columnIndex = 0; columnIndex < numberOfColumns; columnIndex++) {
         if (rowIndex % 2 !== 0 && columnIndex % 2 !== 0) {
-          this.drawRect(columnIndex, rowIndex, "rgba(255,255,255, 0.7)", sizeOfBlock);
+          this.drawRect(columnIndex, rowIndex, colorOfColumn, sizeOfBlock);
           continue;
         }
 
-        this.drawRect(columnIndex, rowIndex, "rgba(255,255,255, 0.4)", sizeOfBlock);
+        this.drawRect(columnIndex, rowIndex, colorOfCell, sizeOfBlock);
       }
     }
   }

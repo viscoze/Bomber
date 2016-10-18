@@ -20,4 +20,20 @@ export default {
     colorOfCell:          "rgba(255,255,255, 0.4)",
     colorOfColumn:        "rgba(255,255,255, 0.7)",
   },
+
+  arenaData: {
+    width:            734,
+    height:           475,
+    numberOfColumns:  11,
+    numberOfRows:     7,
+    sizeOfBlock:      65,
+    sizeOfPlayer:     55,
+    sizeOfBonus:      35,
+    sizeOfBomb:       45,
+    sizeOfBonusType:  25,
+    deltaOfPlayer:    5,
+    deltaOfBonus:     15,
+    deltaOfBomb:      10,
+    deltaOfBonusType: 20,
+  }
 };
