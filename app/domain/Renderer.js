@@ -1,10 +1,19 @@
 import { getRandomBoolean } from './Helpers.js';
-import config               from '../redux/gameConfig.js';
+import config               from './gameConfig.js';
+
+let boxImage;
+let bombImage;
+let orangePlayerImage;
+let grayPlayerImage;
+let splashImage;
+let cellImage;
+let columnImage;
 
 export default class Renderer {
   constructor(canvas) {
     this.canvas  = canvas;
     this.context = canvas.getContext('2d');
+    this.loadImages();
   }
 
   render(state) {
@@ -18,22 +27,22 @@ export default class Renderer {
     const { sizeOfPlayer, deltaOfPlayer} = config.arenaData;
     const { sizeOfBomb, deltaOfBomb }    = config.arenaData;
     const { sizeOfBonus, deltaOfBonus }  = config.arenaData;
-    const { colorOfBox, colorOfBomb, colorOfSplash, colorOfBonus } = config.colors;
+    const { colorOfBonus }               = config.colors;
 
     players.map(({ positionX, positionY, color}) => {
-      this.drawRect(positionX, positionY, color, sizeOfPlayer, deltaOfPlayer);
+      this.drawPlayer(positionX, positionY, color);
     });
 
     boxes.map(({positionX, positionY}) => {
-      this.drawRect(positionX, positionY, colorOfBox);
+      this.drawImage(positionX, positionY, boxImage);
     });
 
     bombs.map(({positionX, positionY}) => {
-      this.drawRect(positionX, positionY, colorOfBomb, sizeOfBomb, deltaOfBomb);
+      this.drawImage(positionX, positionY, bombImage, sizeOfBomb, deltaOfBomb);
     });
 
     splashes.map(({positionX, positionY}) => {
-      this.drawRect(positionX, positionY, colorOfSplash, sizeOfBomb, deltaOfBomb);
+      this.drawImage(positionX, positionY, splashImage, sizeOfBomb, deltaOfBomb);
     });
 
     bonuses.map(({positionX, positionY, type}) => {
@@ -59,6 +68,23 @@ export default class Renderer {
     const y = positionY * (sizeOfBlock + 2) + delta;
 
     this.context.drawImage(image, x, y, size, size);
+  }
+
+  drawPlayer(positionX, positionY, color, size = 55, delta = 5) {
+    const { sizeOfBlock }                             = config.arenaData;
+    const { colorOfFirstPlayer, colorOfSecondPlayer } = config.colors;
+
+    const x = positionX * (sizeOfBlock + 2) + delta;
+    const y = positionY * (sizeOfBlock + 2) + delta;
+
+    switch (color) {
+      case colorOfFirstPlayer:
+        this.drawImage(positionX, positionY, orangePlayerImage, size, delta);
+        break;
+      case colorOfSecondPlayer:
+        this.drawImage(positionX, positionY, grayPlayerImage, size, delta);
+        break;
+    }
   }
 
   drawTypeOfBonus(positionX, positionY, type) {
@@ -105,18 +131,41 @@ export default class Renderer {
   }
 
   drawArena() {
-    const { numberOfColumns, numberOfRows, sizeOfBlock } = config.arenaData;
+    const { numberOfColumns, numberOfRows } = config.arenaData;
     const { colorOfCell, colorOfColumn } = config.colors;
 
     for (let rowIndex = 0; rowIndex < numberOfRows; rowIndex++) {
       for (let columnIndex = 0; columnIndex < numberOfColumns; columnIndex++) {
         if (rowIndex % 2 !== 0 && columnIndex % 2 !== 0) {
-          this.drawRect(columnIndex, rowIndex, colorOfColumn, sizeOfBlock);
+          this.drawImage(columnIndex, rowIndex, columnImage);
           continue;
         }
 
-        this.drawRect(columnIndex, rowIndex, colorOfCell, sizeOfBlock);
+        this.drawImage(columnIndex, rowIndex, cellImage);
       }
     }
+  }
+
+  loadImages() {
+    boxImage     = new Image();
+    boxImage.src = '/images/box.png';
+
+    bombImage     = new Image();
+    bombImage.src = '/images/tnt.png';
+
+    orangePlayerImage     = new Image();
+    orangePlayerImage.src = '/images/orange_player.png';
+
+    grayPlayerImage     = new Image();
+    grayPlayerImage.src = '/images/gray_player.png';
+
+    splashImage = new Image();
+    splashImage.src = '/images/splash.png';
+
+    columnImage = new Image();
+    columnImage.src = '/images/column.png'
+
+    cellImage     = new Image();
+    cellImage.src = '/images/cell.png';
   }
 }

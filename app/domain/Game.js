@@ -126,7 +126,7 @@ export default {
   getNameByColor(colorCode) {
     switch (colorCode) {
       case "rgba(255, 153, 20, 0.4)": return "orange";
-      case "rgba(20, 239, 255, 0.4)": return "blue";
+      case "rgba(96, 96, 96, 0.4)":   return "gray";
       default:                        return "";
     }
   },

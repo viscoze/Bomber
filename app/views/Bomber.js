@@ -41,7 +41,7 @@ export default class Bomber extends Component {
     this.renderer.drawBoxes(createBox);
 
     this.props.createPlayer(0,  0, "rgba(255, 153, 20, 0.4)");
-    this.props.createPlayer(10, 6, "rgba(20, 239, 255, 0.4)");
+    this.props.createPlayer(10, 6, "rgba(96, 96, 96, 0.4)");
   }
 
   resetGame() {

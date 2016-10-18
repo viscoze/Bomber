@@ -12,11 +12,11 @@ export default {
 
   colors: {
     colorOfFirstPlayer:   "rgba(255, 153, 20, 0.4)",
-    colorOfSecondPlayer:  "rgba(20, 239, 255, 0.4)",
-    colorOfSplash:        "rgba(250, 255, 10, 0.4)",
+    colorOfSecondPlayer:  "rgba(96, 96, 96, 0.4)",
+    colorOfSplash:        "rgba(250, 255, 10, 0.7)",
     colorOfBox:           "rgba(78, 94, 95, 0.4)",
-    colorOfBonus:         "rgba(127, 0, 255, 0.4)",
-    colorOfBomb:          "rgba(255, 14, 10, 0.4)",
+    colorOfBonus:         "rgba(127, 0, 255, 0.7)",
+    colorOfBomb:          "rgba(255, 14, 10, 0.7)",
     colorOfCell:          "rgba(255,255,255, 0.4)",
     colorOfColumn:        "rgba(255,255,255, 0.7)",
   },

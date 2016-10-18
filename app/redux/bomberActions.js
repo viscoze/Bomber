@@ -1,5 +1,5 @@
 import Game                 from '../domain/Game.js';
-import config               from  './gameConfig.js';
+import config               from '../domain/gameConfig.js';
 import { getRandomInteger } from '../domain/Helpers.js';
 import { getRandomBoolean } from '../domain/Helpers.js';
 
