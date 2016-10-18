@@ -3,7 +3,7 @@ Bomber
 
 A modern version of the legendary Bomberman game.
 
-![bomber](bomber-full.png)
+![bomber](bomber-full-new.png)
 
 ### Objective
 
